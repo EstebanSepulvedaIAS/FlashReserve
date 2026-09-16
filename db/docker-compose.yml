@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: flashreserve-mongo
+    ports:
+      - "27017:27017"
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    healthcheck:
+      test: mongosh --quiet --eval "db.adminCommand('ping').ok"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - mongo_data:/data/db
+  mongo-init:
+    image: mongo:6.0
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./init-scripts:/scripts
+    command: mongosh --host mongodb --file /scripts/01-init-data.js
+volumes:
+  mongo_data:
+    
