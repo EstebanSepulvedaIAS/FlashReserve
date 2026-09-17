@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/flashreserve?replicaSet=rs0
+      - WEBHOOK_API_KEY=secreto_seguro_123
+    networks:
+      - flashreserve-network
+
+networks:
+  flashreserve-network:
+    external: true

@@ -16,7 +16,7 @@ while(!db.hello().isWritablePrimary){
 }
 print("El nodo ahora es primary");
 
-db = db.getSiblingDB('flashreserve_db');
+db = db.getSiblingDB('flashreserve');
 
 print("Creando colecciones e indices");
 

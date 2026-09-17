@@ -8,13 +8,17 @@ services:
       - "27017:27017"
     command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
     healthcheck:
-      test: mongosh --quiet --eval "db.adminCommand('ping').ok"
+      test: >
+        mongosh --quiet --eval
+        "db.hello().isWritablePrimary"
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
     volumes:
       - mongo_data:/data/db
+    networks:
+      - flashreserve-network
   mongo-init:
     image: mongo:6.0
     depends_on:
@@ -23,6 +27,11 @@ services:
     volumes:
       - ./init-scripts:/scripts
     command: mongosh --host mongodb --file /scripts/01-init-data.js
+    networks:
+      - flashreserve-network
 volumes:
   mongo_data:
+networks:
+  flashreserve-network:
+    external: true
     
